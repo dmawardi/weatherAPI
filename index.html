@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+
+
+
+</head>
+
+<body>
+    <div container>
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <input type="text" placeholder="City"><button type="button"
+                    class="query_btn btn btn-default btn-sm">Search</button><br>
+                <input type="text" placeholder="Zip Code"><button type="button"
+                    class="query_btn btn btn-default btn-sm">Search</button><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h2>City: <span id="city"></span></h2>
+                <h2>Main Weather: <span id="main_weather"></span></h2>
+                <h2>Description: <span id="description_weather"></span></h2>
+                <img id="weather_image" src="">
+                <h2>Temperature: <span id="temperature"></span></h2>
+                <h2>Pressure: <span id="pressure"></span></h2>
+                <h2>Humidity: <span id="humidity"></span></h2>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Weather API JS -->
+    <script>
+        $(document).ready(function () {
+            var appID = "bd5f3a0196b625a425392653ca077c1f";
+
+            $(".query_btn").click(function () {
+
+                var query_param = $(this).prev().val();
+
+                if ($(this).prev().attr("placeholder") == "City") {
+                    var weather = "http://api.openweathermap.org/data/2.5/weather?q=" + query_param +
+                        "&APPID=" + appID;
+                } else if ($(this).prev().attr("placeholder") == "Zip Code") {
+                    var weather = "http://api.openweathermap.org/data/2.5/weather?zip=" + query_param +
+                        "&APPID=" + appID;
+                }
+
+                $.getJSON(weather, function (json) {
+                    $("#city").html(json.name);
+                    $("#main_weather").html(json.weather[0].main);
+                    $("#description_weather").html(json.weather[0].description);
+                    $("#weather_image").attr("src", "http://openweathermap.org/img/w/" + json
+                        .weather[0].icon + ".png");
+                    $("#temperature").html(json.main.temp);
+                    $("#pressure").html(json.main.pressure);
+                    $("#humidity").html(json.main.humidity);
+                });
+            })
+
+            // Optional Code for temperature conversion
+            var fahrenheit = true;
+
+            $("#convertToCelsius").click(function () {
+                if (fahrenheit) {
+                    $("#temperature").text(((($("#temperature").text() - 32) * 5) / 9));
+                }
+                fahrenheit = false;
+            });
+
+            $("#convertToFahrenheit").click(function () {
+                if (fahrenheit == false) {
+                    $("#temperature").text((($("#temperature").text() * (9 / 5)) + 32));
+                }
+                fahrenheit = true;
+            });
+        });
+    </script>
+</body>
+
+</html>
